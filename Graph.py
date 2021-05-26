@@ -86,9 +86,21 @@ class Graph:
         return scc
 
     # returns the MST calced by Prim's algorithm, if wanted, prints it
-    def MST_Prim(self):
+    def mst_Prim(self):
         pass
 
     # returns the MST calced by Kruskal's algorithm, if wanted, prints it
-    def MST_Kruskal(self):
+    def mst_Kruskal(self):
+        pass
+
+    # returns the shortest path from u to v and its weight calced using Dijkstra, if wanted, prints it
+    def shortest_path_Dijkstra(self, u, v):
+        pass
+
+    # returns the shortest path from u to v and its weight calced by Bellman Ford, if wanted, prints it
+    def shortest_path_Bellman_Ford(self, u, v):
+        pass
+
+    # returns a matrix of all pairs shortest paths calced by Johnson algorithm
+    def apsp(self):
         pass

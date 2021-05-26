@@ -1,16 +1,22 @@
 from collections import defaultdict
 
 
-# a general class for a graph
+# a general class for a directed graph
 class Graph:
 
     def __init__(self, num_of_vertex):
         self.V = num_of_vertex
         self.graph = defaultdict(list)
+        self.weights = defaultdict(list)
+        self.positive_w = True
 
     # add edge into the graph
-    def add_edge(self, s, d):
+    def add_edge(self, s, d, w=1):
         self.graph[s].append(d)
+        self.weights[s,d].append(w)
+
+        if w < 0 and self.positive_w:
+            self.positive_w = False
 
     # transpose the edge matrix
     def transpose(self):
@@ -22,21 +28,25 @@ class Graph:
         return g
 
     # the recursive dfs inner func
-    def __dfs(self, d, visited, vertex_ordered, print_forest):
+    def __dfs(self, d, visited, vertex_ordered_i, vertex_ordered_f, print_forest):
         visited[d] = True
-        vertex_ordered.append(d)
+        vertex_ordered_i.append(d)
         for u in self.graph[d]:
             if not visited[u]:
                 if print_forest:
-                    print(d, '->', u, '/')
+                    print(d, '->', u, ' ')
                 self.__dfs(u, visited)
+        vertex_ordered_f.append(d)
+
+        return vertex_ordered_i, vertex_ordered_f
 
     # returns the vertex in the dfs order, if wanted prints the dfs forest
-    def dfs(self, d, print_forest):
+    def dfs(self, d=0, print_forest=True):
         visited = [False] * self.V
-        vertex_ordered = []
-        self.__dfs(d, visited, vertex_ordered, print_forest)
-        return vertex_ordered
+        vertex_ordered_i = []
+        vertex_ordered_f = []
+        self.__dfs(d, visited, vertex_ordered_i, vertex_ordered_f, print_forest)
+        return vertex_ordered_i, vertex_ordered_f
 
     # returns the vertex in the bfs order, if wanted prints the bfs tree
     def bfs(self, d, print_tree):
@@ -55,14 +65,30 @@ class Graph:
                     queue.append(v)
                     visited[v] = True
                     if print_tree:
-                        print(u, '->', v, '/')
+                        print(u, '->', v, ' ')
         return vertex_ordered
 
-    # print the SCC - O(V+E)
-    def scc(self):
-        stack = []
-        visited = [False] * self.V
-        g_transpose = self.transpose()
+    # returns the scc, if wanted, prints the SCC - O(V+E)
+    def scc(self, print_scc=True):
+        scc = []
+        dfs_order_i, dfs_order_f = self.dfs(0)
+        g_transpose = self.transpose(0)
 
-        for u in range(self.V):
+        visited = [False] * self.V
+
+        while dfs_order_f:
+            u = dfs_order_f.pop()
             if not visited[u]:
+                i, f = g_transpose.__dfs(u, visited, [], [], print_scc)
+                if print_scc:
+                    print("/")
+                scc.append(f)
+        return scc
+
+    # returns the MST calced by Prim's algorithm, if wanted, prints it
+    def MST_Prim(self):
+        pass
+
+    # returns the MST calced by Kruskal's algorithm, if wanted, prints it
+    def MST_Kruskal(self):
+        pass
